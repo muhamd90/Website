@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>لوحة التحكم | عيادات ابتسامة بغداد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060E1C; --panel:#0F2040; --card:#162B52;
+  --gold:#C9A84C; --gold2:#E8C96A;
+  --white:#fff; --muted:#8899BB; --body:#CBD5E8;
+  --green:#2ECC71; --red:#E74C3C;
+  --r:10px; --r2:16px;
+  --sidebar-w:240px;
+}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--white);direction:rtl;min-height:100vh;display:flex}
+
+/* ── SIDEBAR ── */
+.sb{
+  width:var(--sidebar-w);background:var(--panel);
+  border-left:1px solid rgba(201,168,76,.12);
+  position:fixed;top:0;right:0;bottom:0;
+  display:flex;flex-direction:column;z-index:50;overflow-y:auto;
+}
+.sb-head{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-logo{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.sb-logo em{color:var(--gold);font-style:normal}
+.sb-sub{font-size:.7rem;color:var(--muted);margin-top:3px}
+.sb-nav{padding:10px 10px;flex:1}
+.sb-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 8px 4px}
+.sb-btn{
+  width:100%;display:flex;align-items:center;gap:9px;
+  padding:9px 10px;border-radius:var(--r);
+  background:none;border:none;color:var(--body);
+  font-size:.82rem;font-weight:600;cursor:pointer;
+  transition:all .18s;text-align:right;margin-bottom:1px;
+  font-family:'Cairo',sans-serif;
+}
+.sb-btn:hover{background:rgba(201,168,76,.07);color:var(--white)}
+.sb-btn.on{background:rgba(201,168,76,.13);color:var(--gold);border-right:3px solid var(--gold)}
+.sb-ico{font-size:.95rem;width:18px;text-align:center;flex-shrink:0}
+.sb-link{text-decoration:none}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.06);font-size:.72rem;color:var(--muted);line-height:1.7}
+
+/* ── MAIN ── */
+.main{margin-right:var(--sidebar-w);flex:1;display:flex;flex-direction:column}
+.topbar{
+  background:var(--panel);border-bottom:1px solid rgba(255,255,255,.06);
+  padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:40;
+}
+.pg-title{font-size:1rem;font-weight:700}
+.pg-title small{color:var(--muted);font-weight:400;font-size:.78rem;margin-right:6px}
+.tb-right{display:flex;gap:10px;align-items:center}
+.btn-save{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#0A1628;border:none;padding:8px 20px;border-radius:50px;
+  font-weight:800;font-size:.82rem;cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,168,76,.35)}
+.btn-preview{
+  background:transparent;border:1px solid rgba(201,168,76,.3);color:var(--gold);
+  padding:8px 16px;border-radius:50px;font-size:.78rem;cursor:pointer;
+  text-decoration:none;display:flex;align-items:center;gap:5px;
+  transition:all .15s;font-family:'Cairo',sans-serif;
+}
+.btn-preview:hover{border-color:var(--gold);background:rgba(201,168,76,.06)}
+
+.content{padding:24px;flex:1}
+
+/* ── PANELS ── */
+.pnl{display:none}
+.pnl.on{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--panel);border:1px solid rgba(255,255,255,.07);border-radius:var(--r2);padding:22px;margin-bottom:18px}
+.card-title{font-size:.9rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.card-desc{font-size:.73rem;color:var(--muted);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--panel);border:1px solid rgba(201,168,76,.1);border-radius:var(--r2);padding:18px}
+.stat .n{font-size:1.7rem;font-weight:900;color:var(--gold);line-height:1}
+.stat .l{font-size:.72rem;color:var(--muted);margin-top:5px}
+.stat .t{font-size:.68rem;color:var(--green);margin-top:7px}
+
+/* ── FORM ── */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:.73rem;font-weight:700;color:var(--body)}
+.fg input,.fg select,.fg textarea{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r);padding:10px 12px;
+  color:var(--white);font-size:.83rem;
+  direction:rtl;font-family:'Cairo',sans-serif;
+  outline:none;width:100%;
+  transition:border-color .15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);background:rgba(201,168,76,.04)}
+.fg select option{background:var(--panel)}
+.fg textarea{resize:vertical}
+.fg small{font-size:.68rem;color:var(--muted)}
+.fg input[type=color]{height:38px;padding:3px;cursor:pointer}
+.fg input[type=range]{padding:0;cursor:pointer;accent-color:var(--gold)}
+.fg input[type=time]{direction:ltr}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{background:rgba(255,255,255,.04);padding:11px 12px;text-align:right;font-size:.7rem;font-weight:700;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap}
+td{padding:13px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── BADGES ── */
+.bx{display:inline-block;padding:3px 9px;border-radius:50px;font-size:.68rem;font-weight:700}
+.bx-g{background:rgba(46,204,113,.13);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+.bx-y{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
+.bx-r{background:rgba(231,76,60,.12);color:var(--red);border:1px solid rgba(231,76,60,.2)}
+
+/* ── ACTION BTNS ── */
+.ab{background:transparent;border:1px solid rgba(201,168,76,.2);color:var(--gold);padding:5px 11px;border-radius:50px;font-size:.7rem;cursor:pointer;transition:all .15s;font-family:'Cairo',sans-serif}
+.ab:hover{background:rgba(201,168,76,.1);border-color:var(--gold)}
+.ab-r{border-color:rgba(231,76,60,.2);color:var(--red)}
+.ab-r:hover{background:rgba(231,76,60,.1);border-color:var(--red)}
+.ab-g{border-color:rgba(37,211,102,.25);color:var(--green)}
+.ab-g:hover{background:rgba(37,211,102,.1)}
+
+/* ── TOGGLE ── */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.trow:last-child{border:none}
+.trow-info h4{font-size:.83rem;font-weight:700;margin-bottom:2px}
+.trow-info p{font-size:.7rem;color:var(--muted)}
+.tog{position:relative;width:42px;height:22px;flex-shrink:0}
+.tog input{display:none}
+.tog-track{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:50px;cursor:pointer;transition:background .2s}
+.tog input:checked~.tog-track{background:var(--gold)}
+.tog-thumb{position:absolute;top:3px;right:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.tog input:checked~.tog-track~.tog-thumb{transform:translateX(-20px)}
+
+/* ── DAYS GRID ── */
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.day{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:10px 4px;text-align:center;cursor:pointer;transition:all .18s}
+.day.on{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3);color:var(--gold)}
+.day-n{font-size:.72rem;font-weight:700;display:block;margin-bottom:5px}
+.day-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);margin:0 auto}
+.day.on .day-dot{background:var(--gold)}
+
+/* ── QUICK BTNS ── */
+.qbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.qbtn{
+  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.18);
+  color:var(--gold);padding:16px 12px;border-radius:var(--r);
+  cursor:pointer;font-size:.83rem;font-weight:700;
+  font-family:'Cairo',sans-serif;transition:all .18s;text-align:center;
+}
+.qbtn:hover{background:rgba(201,168,76,.15)}
+
+/* ── SEO PREVIEW ── */
+.seo-prev{background:#fff;border-radius:var(--r);padding:16px;color:#000}
+.seo-prev .url{color:#006621;font-size:.72rem;margin-bottom:2px}
+.seo-prev .ttl{color:#1a0dab;font-size:.95rem;font-weight:500;margin-bottom:3px}
+.seo-prev .dsc{color:#545454;font-size:.78rem;line-height:1.5}
+
+/* ── SEPARATOR ── */
+.sep{height:1px;background:rgba(255,255,255,.05);margin:16px 0}
+
+/* ── NOTIFICATION ── */
+.notif{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  background:var(--panel);border:1px solid rgba(46,204,113,.3);
+  color:var(--green);padding:11px 26px;border-radius:50px;
+  font-size:.83rem;font-weight:600;z-index:1000;
+  opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.notif.show{opacity:1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sb{display:none}
+  .main{margin-right:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .grid.g2,.grid.g3{grid-template-columns:1fr}
+  .qbtns{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .stats{grid-template-columns:1fr 1fr}
+  .content{padding:14px}
+  .topbar{padding:12px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-head">
+    <div class="sb-logo">🦷 <em>لوحة التحكم</em></div>
+    <div class="sb-sub">عيادات ابتسامة بغداد</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-label">عام</div>
+    <button class="sb-btn on" onclick="go('dashboard',this)"><span class="sb-ico">📊</span>نظرة عامة</button>
+    <button class="sb-btn" onclick="go('bookings',this)"><span class="sb-ico">📅</span>الحجوزات</button>
+    <div class="sb-label">محتوى الموقع</div>
+    <button class="sb-btn" onclick="go('hero',this)"><span class="sb-ico">🏠</span>الصفحة الرئيسية</button>
+    <button class="sb-btn" onclick="go('doctor',this)"><span class="sb-ico">👨‍⚕️</span>معلومات الدكتور</button>
+    <button class="sb-btn" onclick="go('services',this)"><span class="sb-ico">🦷</span>الخدمات</button>
+    <button class="sb-btn" onclick="go('schedule',this)"><span class="sb-ico">🕐</span>الدوام والمواعيد</button>
+    <button class="sb-btn" onclick="go('contact',this)"><span class="sb-ico">📞</span>معلومات التواصل</button>
+    <div class="sb-label">إعدادات</div>
+    <button class="sb-btn" onclick="go('seo',this)"><span class="sb-ico">🔍</span>تحسين Google</button>
+    <button class="sb-btn" onclick="go('features',this)"><span class="sb-ico">⚙️</span>أقسام الموقع</button>
+    <div class="sb-label">روابط</div>
+    <a class="sb-btn sb-link" href="index.html" target="_blank"><span class="sb-ico">🌐</span>الموقع الرئيسي</a>
+    <a class="sb-btn sb-link" href="landing.html" target="_blank"><span class="sb-ico">🎯</span>صفحة الهبوط</a>
+  </nav>
+  <div class="sb-foot">
+    <strong style="color:var(--body);display:block;margin-bottom:3px">د. محمد نضال النعيمي</strong>
+    المنصور – مول بابيلون<br>السبت والاثنين | ١٠ص–٨م
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="pg-title" id="pg-title">نظرة عامة <small>/ Dashboard</small></div>
+    <div class="tb-right">
+      <a href="index.html" target="_blank" class="btn-preview">🌐 عرض الموقع</a>
+      <button class="btn-save" onclick="save()">💾 حفظ</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="pnl on" id="pnl-dashboard">
+      <div class="stats">
+        <div class="stat"><div class="n">٣</div><div class="l">حجوزات اليوم</div><div class="t">↑ جديدة</div></div>
+        <div class="stat"><div class="n">+١٢٠٠</div><div class="l">إجمالي الحالات</div><div class="t">✓ محدّث</div></div>
+        <div class="stat"><div class="n">٢</div><div class="l">أيام الدوام</div><div class="t">السبت + الاثنين</div></div>
+        <div class="stat"><div class="n" style="color:var(--green)">نشط</div><div class="l">حالة الموقع</div><div class="t">✓ يعمل</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚡ إجراءات سريعة</div>
+        <div class="card-desc">الأكثر استخداماً</div>
+        <div class="qbtns">
+          <button class="qbtn" onclick="go('schedule',null)">🕐 تغيير ساعات الدوام</button>
+          <button class="qbtn" onclick="go('contact',null)">📞 تحديث أرقام التواصل</button>
+          <button class="qbtn" onclick="go('hero',null)">✏️ تعديل نص الصفحة</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 آخر الحجوزات</div>
+        <div class="card-desc">أحدث طلبات الحجز الواردة</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>الاسم</th><th>الهاتف</th><th>الخدمة</th><th>الحالة</th><th>إجراء</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>أحمد الجبوري</strong></td>
+                <td><span style="direction:ltr;display:inline-block">0771 234 5678</span></td>
+                <td>زراعة أسنان</td>
+                <td><span class="bx bx-g">جديد</span></td>
+                <td style="display:flex;gap:6px">
+                  <button class="ab ab-g" onclick="waMe('07712345678')">💬</button>
+                  <button class="ab" onclick="callMe('07712345678')">📞</button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>نور الموسوي</strong></td>
+                <td><span style="direction:ltr;display:inline-block">0782 987 6543</span></td>
+                <td>ابتسامة هوليودية</td>
+                <td><span class="bx bx-y">متابعة</span></td>
+                <td style="display:flex;gap:6px">
+                  <button class="ab ab-g" onclick="waMe('07829876543')">💬</button>
+                  <button class="ab" onclick="callMe('07829876543')">📞</button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>مريم كاظم</strong></td>
+                <td><span style="direction:ltr;display:inline-block">0770 111 2233</span></td>
+                <td>زراعة فك كامل</td>
+                <td><span class="bx bx-g">مؤكد</span></td>
+                <td style="display:flex;gap:6px">
+                  <button class="ab ab-g" onclick="waMe('07701112233')">💬</button>
+                  <button class="ab" onclick="callMe('07701112233')">📞</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BOOKINGS ═══ -->
+    <div class="pnl" id="pnl-bookings">
+      <div class="card">
+        <div class="card-title">📅 إدارة الحجوزات</div>
+        <div class="card-desc">جميع الطلبات الواردة – اضغط 💬 للواتساب أو 📞 للاتصال مباشرة</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>الاسم</th><th>الهاتف</th><th>الخدمة</th><th>ملاحظات</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+            <tbody id="book-tb">
+              <tr>
+                <td style="color:var(--muted)">001</td>
+                <td><strong>أحمد الجبوري</strong></td>
+                <td><span style="direction:ltr;display:inline-block">0771 234 5678</span></td>
+                <td>زراعة أسنان</td>
+                <td style="color:var(--muted);font-size:.75rem">يريد معرفة التكلفة</td>
+                <td><span class="bx bx-g">جديد</span></td>
+                <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+                  <button class="ab ab-g" onclick="waMe('07712345678')">💬 واتساب</button>
+                  <button class="ab" onclick="callMe('07712345678')">📞 اتصال</button>
+                  <button class="ab ab-r" onclick="delRow(this)">🗑</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td style="color:var(--muted)">002</td>
+                <td><strong>نور الموسوي</strong></td>
+                <td><span style="direction:ltr;display:inline-block">0782 987 6543</span></td>
+                <td>ابتسامة هوليودية</td>
+                <td style="color:var(--muted);font-size:.75rem">—</td>
+                <td><span class="bx bx-y">متابعة</span></td>
+                <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+                  <button class="ab ab-g" onclick="waMe('07829876543')">💬 واتساب</button>
+                  <button class="ab" onclick="callMe('07829876543')">📞 اتصال</button>
+                  <button class="ab ab-r" onclick="delRow(this)">🗑</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:14px;font-size:.72rem;color:var(--muted)">💡 لتفعيل الحجوزات التلقائية اربط الفورم بـ Formspree أو Google Sheets.</p>
+      </div>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <div class="pnl" id="pnl-hero">
+      <div class="card">
+        <div class="card-title">🏠 نصوص الصفحة الرئيسية</div>
+        <div class="card-desc">عدّل العناوين والنصوص التي تظهر في أول الصفحة</div>
+        <div class="grid">
+          <div class="fg"><label>الشارة العلوية</label><input type="text" value="عيادات ابتسامة بغداد – المنصور"/></div>
+          <div class="grid g2">
+            <div class="fg"><label>العنوان – الكلمة الأولى</label><input type="text" value="ابتسامتك"/></div>
+            <div class="fg"><label>الكلمة الذهبية</label><input type="text" value="تستحق الأفضل"/></div>
+          </div>
+          <div class="fg"><label>السطر الثالث (بالخط المميز)</label><input type="text" value="زراعة تجميلية"/></div>
+          <div class="fg"><label>النص التوضيحي</label><textarea rows="3">متخصص في الزراعة التجميلية للأسنان، الابتسامة الهوليودية، وإعادة التأهيل الكامل. تقنيات حديثة، نتائج دائمة، وتجربة مريحة من أول زيارة.</textarea></div>
+          <div class="grid g2">
+            <div class="fg"><label>نص الزر الأول</label><input type="text" value="📅 احجز استشارتك المجانية"/></div>
+            <div class="fg"><label>نص الزر الثاني</label><input type="text" value="🦷 شوف حالاتنا"/></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 أرقام العداد</div>
+        <div class="card-desc">الأرقام أسفل الهيرو</div>
+        <div class="grid g2">
+          <div class="fg"><label>عدد الحالات الناجحة</label><input type="number" value="1200"/></div>
+          <div class="fg"><label>سنوات الخبرة</label><input type="number" value="10"/></div>
+          <div class="fg"><label>نص ثابت – السطر الأول</label><input type="text" value="بغداد"/></div>
+          <div class="fg"><label>نص ثابت – السطر الثاني</label><input type="text" value="المنصور"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DOCTOR ═══ -->
+    <div class="pnl" id="pnl-doctor">
+      <div class="card">
+        <div class="card-title">👨‍⚕️ معلومات الدكتور</div>
+        <div class="card-desc">تظهر في قسم "عن الدكتور"</div>
+        <div class="grid">
+          <div class="grid g2">
+            <div class="fg"><label>الاسم الكامل</label><input type="text" value="د. محمد نضال النعيمي"/></div>
+            <div class="fg"><label>العضوية الدولية</label><input type="text" value="BAIRD – British Academy of Implant & Restorative Dentistry"/></div>
+          </div>
+          <div class="fg"><label>النبذة الشخصية (Bio)</label><textarea rows="4">طبيب أسنان متخصص في الزراعة التجميلية وإعادة التأهيل الكامل للفم، بخبرة تتجاوز ١٠ سنوات في بغداد. عضو معتمد في الأكاديمية البريطانية لزراعة الأسنان (BAIRD)، وحاضر منتظم في المؤتمرات الدولية.</textarea></div>
+          <div class="fg">
+            <label>المؤتمرات الدولية (كل مؤتمر في سطر)</label>
+            <textarea rows="4">🇩🇪 ألمانيا
+🇦🇪 دبي
+🇷🇴 رومانيا
+🇰🇷 كوريا
+🇨🇭 سويسرا
+🇮🇹 إيطاليا</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SERVICES ═══ -->
+    <div class="pnl" id="pnl-services">
+      <div class="card">
+        <div class="card-title">🦷 الخدمات</div>
+        <div class="card-desc">عدّل أو أضف خدمات جديدة</div>
+        <div id="svc-list"></div>
+        <button onclick="addSvc()" style="background:rgba(201,168,76,.08);border:1px dashed rgba(201,168,76,.3);color:var(--gold);padding:11px;border-radius:var(--r);cursor:pointer;width:100%;margin-top:10px;font-size:.82rem;font-family:'Cairo',sans-serif;">+ إضافة خدمة</button>
+      </div>
+    </div>
+
+    <!-- ═══ SCHEDULE ═══ -->
+    <div class="pnl" id="pnl-schedule">
+      <div class="card">
+        <div class="card-title">🕐 مواعيد الدوام</div>
+        <div class="card-desc">حدد أيام وساعات تواجد الدكتور في العيادة</div>
+        <div class="fg" style="margin-bottom:18px">
+          <label>أيام الدوام (اضغط لتفعيل/إيقاف)</label>
+          <div class="days">
+            <div class="day" onclick="togDay(this)"><span class="day-n">سبت</span><div class="day-dot"></div></div>
+            <div class="day" onclick="togDay(this)"><span class="day-n">أحد</span><div class="day-dot"></div></div>
+            <div class="day on" onclick="togDay(this)"><span class="day-n">اثنين</span><div class="day-dot"></div></div>
+            <div class="day" onclick="togDay(this)"><span class="day-n">ثلاثاء</span><div class="day-dot"></div></div>
+            <div class="day" onclick="togDay(this)"><span class="day-n">أربعاء</span><div class="day-dot"></div></div>
+            <div class="day" onclick="togDay(this)"><span class="day-n">خميس</span><div class="day-dot"></div></div>
+            <div class="day" onclick="togDay(this)"><span class="day-n">جمعة</span><div class="day-dot"></div></div>
+          </div>
+        </div>
+        <div class="grid g2">
+          <div class="fg"><label>وقت الفتح</label><input type="time" value="10:00"/></div>
+          <div class="fg"><label>وقت الإغلاق</label><input type="time" value="20:00"/></div>
+        </div>
+        <div class="sep"></div>
+        <div class="fg"><label>رسالة الإغلاق</label><input type="text" value="العيادة مغلقة اليوم. يمكنك الحجز عبر الواتساب في أي وقت."/></div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTACT ═══ -->
+    <div class="pnl" id="pnl-contact">
+      <div class="card">
+        <div class="card-title">📞 معلومات التواصل</div>
+        <div class="card-desc">الأرقام والعناوين في الموقع وصفحة الهبوط</div>
+        <div class="grid">
+          <div class="grid g2">
+            <div class="fg">
+              <label>رقم الواتساب (للحجز)</label>
+              <input type="tel" value="9647725041090" style="direction:ltr"/>
+              <small>بدون + مثال: 9647XXXXXXXXX</small>
+            </div>
+            <div class="fg">
+              <label>رقم العيادة (للاتصال)</label>
+              <input type="tel" value="07822224032" style="direction:ltr"/>
+            </div>
+          </div>
+          <div class="fg"><label>العنوان الكامل</label><textarea rows="2">بغداد – المنصور – شارع مول بابيلون – مقابل مطعم بيستون صمد</textarea></div>
+          <div class="grid g2">
+            <div class="fg"><label>رابط إنستغرام</label><input type="url" placeholder="https://instagram.com/..." style="direction:ltr"/></div>
+            <div class="fg"><label>رابط فيسبوك</label><input type="url" placeholder="https://facebook.com/..." style="direction:ltr"/></div>
+            <div class="fg"><label>رابط يوتيوب</label><input type="url" placeholder="https://youtube.com/..." style="direction:ltr"/></div>
+            <div class="fg"><label>رابط تيك توك</label><input type="url" placeholder="https://tiktok.com/..." style="direction:ltr"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SEO ═══ -->
+    <div class="pnl" id="pnl-seo">
+      <div class="card">
+        <div class="card-title">🔍 تحسين محركات البحث</div>
+        <div class="card-desc">النصوص التي تظهر في نتائج Google</div>
+        <div class="grid">
+          <div class="fg">
+            <label>عنوان الصفحة في Google</label>
+            <input type="text" id="s-title" value="د. محمد نضال النعيمي | زراعة الأسنان التجميلية – بغداد المنصور" oninput="updSEO()"/>
+            <small>الحد: ٦٠ حرف | الحالي: <span id="tc">0</span></small>
+          </div>
+          <div class="fg">
+            <label>وصف الصفحة (Meta Description)</label>
+            <textarea id="s-desc" rows="3" oninput="updSEO()">د. محمد نضال النعيمي – عضو الأكاديمية البريطانية BAIRD. متخصص في الزراعة التجميلية والابتسامة الهوليودية. عيادات ابتسامة بغداد – المنصور.</textarea>
+            <small>الحد: ١٦٠ حرف | الحالي: <span id="dc">0</span></small>
+          </div>
+          <div class="fg">
+            <label>الكلمات المفتاحية</label>
+            <textarea rows="2">زراعة اسنان بغداد, محمد نضال النعيمي, زراعة أسنان تجميلية, دكتور اسنان بغداد, BAIRD implant بغداد</textarea>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <p style="font-size:.78rem;font-weight:700;margin-bottom:10px">👁 معاينة Google</p>
+        <div class="seo-prev">
+          <div class="url">www.baghdadsmile.iq</div>
+          <div class="ttl" id="s-prev-t">د. محمد نضال النعيمي | زراعة الأسنان التجميلية...</div>
+          <div class="dsc" id="s-prev-d">د. محمد نضال النعيمي – عضو الأكاديمية البريطانية BAIRD...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FEATURES ═══ -->
+    <div class="pnl" id="pnl-features">
+      <div class="card">
+        <div class="card-title">⚙️ أقسام وميزات الموقع</div>
+        <div class="card-desc">تشغيل أو إيقاف أي قسم في الموقع</div>
+        <div class="trow"><div class="trow-info"><h4>زر الواتساب العائم</h4><p>الزر الأخضر في الزاوية السفلى اليسرى</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>زر الاتصال العائم</h4><p>زر رقم العيادة في الزاوية السفلى اليمنى</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>قسم عن الدكتور</h4><p>الصور والسيرة الذاتية والشهادات</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>قسم الحالات (قبل وبعد)</h4><p>عرض حالات المرضى</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>شهادات الفيديو</h4><p>بطاقات فيديو آراء المرضى</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>قسم لماذا نحن</h4><p>مميزات العيادة الستة</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>نموذج الحجز</h4><p>الفورم في نهاية الصفحة</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+        <div class="trow"><div class="trow-info"><h4>صفحة الهبوط نشطة</h4><p>تفعيل/تعطيل landing.html</p></div><label class="tog"><input type="checkbox" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="notif" id="notif">✅ تم الحفظ بنجاح</div>
+
+<script>
+const titles={dashboard:'نظرة عامة',bookings:'الحجوزات',hero:'الصفحة الرئيسية',doctor:'معلومات الدكتور',services:'الخدمات',schedule:'الدوام والمواعيد',contact:'معلومات التواصل',seo:'تحسين Google',features:'أقسام الموقع'};
+
+function go(id,btn){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('on'));
+  const p=document.getElementById('pnl-'+id);
+  if(p)p.classList.add('on');
+  if(btn)btn.classList.add('on');
+  document.getElementById('pg-title').innerHTML=(titles[id]||id)+' <small>/ Admin</small>';
+}
+
+function save(){
+  const n=document.getElementById('notif');
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2800);
+}
+
+function togDay(el){el.classList.toggle('on')}
+function waMe(n){window.open('https://wa.me/964'+n.replace(/^0/,''),'_blank')}
+function callMe(n){window.location.href='tel:'+n}
+function delRow(btn){if(confirm('حذف هذا الحجز؟'))btn.closest('tr').remove()}
+
+// SEO live
+function updSEO(){
+  const t=document.getElementById('s-title').value;
+  const d=document.getElementById('s-desc').value;
+  document.getElementById('tc').textContent=t.length;
+  document.getElementById('dc').textContent=d.length;
+  document.getElementById('s-prev-t').textContent=t.slice(0,60)+(t.length>60?'...':'');
+  document.getElementById('s-prev-d').textContent=d.slice(0,160)+(d.length>160?'...':'');
+}
+updSEO();
+
+// Services
+const svcs=[
+  {i:'🦷',t:'الزراعة التجميلية للأسنان',d:'زراعة الأسنان بأحدث الغرسات مع تيجان تجميلية طبيعية المظهر.'},
+  {i:'✨',t:'الابتسامة الهوليودية',d:'قشور البورسلين والزيركون لابتسامة مثالية.'},
+  {i:'🔬',t:'زراعة فك كامل',d:'استعادة كامل الأسنان عند فقدانها بالكامل. حل دائم ومريح.'},
+  {i:'📐',t:'تقويم الأسنان الشفاف',d:'تقويم غير مرئي مريح وسريع.'},
+  {i:'🏥',t:'جراحة العظم',d:'رفع الجيوب الأنفية وتعظيم العظم.'},
+  {i:'💎',t:'تبييض الأسنان',d:'نتائج فورية بجلسة واحدة بالليزر.'},
+];
+function renderSvcs(){
+  document.getElementById('svc-list').innerHTML=svcs.map((s,i)=>`
+    <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start">
+      <input value="${s.i}" style="width:50px;text-align:center;font-size:1.3rem;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:6px;color:var(--white);outline:none"/>
+      <div style="flex:1;display:grid;gap:7px">
+        <input value="${s.t}" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 11px;color:var(--white);font-size:.82rem;outline:none;font-family:'Cairo',sans-serif;direction:rtl"/>
+        <textarea rows="2" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:8px 11px;color:var(--white);font-size:.78rem;resize:none;outline:none;font-family:'Cairo',sans-serif;direction:rtl">${s.d}</textarea>
+      </div>
+      <button onclick="delSvc(${i})" class="ab ab-r" style="flex-shrink:0;margin-top:2px">🗑</button>
+    </div>
+  `).join('');
+}
+function addSvc(){svcs.push({i:'🦷',t:'خدمة جديدة',d:'وصف الخدمة'});renderSvcs()}
+function delSvc(i){svcs.splice(i,1);renderSvcs()}
+renderSvcs();
+</script>
+</body>
+</html>
